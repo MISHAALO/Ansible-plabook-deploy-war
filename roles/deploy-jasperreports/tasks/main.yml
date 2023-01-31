@@ -1,0 +1,8 @@
+---
+- name: Delete jasperreport files from {{ tomcat_dir }}/{{ jasperreport_dir }}/
+  file:
+    path: "{{ tomcat_dir }}/{{ jasperreport_dir }}"
+    state: absent
+
+- name: Copy jasperreport files from {{ releases_dir }}/{{ jasperreport_dir }}/ to {{ tomcat_dir }}/{{ jasperreport_dir }}
+  shell: cp -r {{ releases_dir }}/{{ jasperreport_dir }} {{ tomcat_dir }}/{{ jasperreport_dir }}

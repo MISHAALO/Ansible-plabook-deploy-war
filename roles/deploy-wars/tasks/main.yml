@@ -1,0 +1,37 @@
+---
+- name: Stop Tomcat
+  service:
+    name: tomcat
+    state: stopped
+
+- name: Search for .war files in webapps directory
+  find:
+    paths: "{{ tomcat_dir }}/webapps/"
+    patterns: "{{ war_names }}*"
+    file_type: any
+  register: files_to_delete
+
+- name: Delete old .war files from webapps directory
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+
+- name: Copy new .war files from {{ releases_dir }}/ to {{ tomcat_dir }}/webapps/
+  copy:
+    src: "{{ releases_dir }}/{{ item }}.war"
+    dest: "{{ tomcat_dir }}/webapps/"
+    remote_src: yes
+  with_items: "{{ war_names }}"
+
+- name: Change owner & group for {{ tomcat_dir }}/
+  file:
+    path: "{{ tomcat_dir }}/"
+    state: directory
+    recurse: yes
+    owner: tomcat
+    group: tomcat
+
+- debug: msg="trigger start_tomcat"
+  notify: start_tomcat
+  changed_when: true

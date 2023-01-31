@@ -1,0 +1,14 @@
+---
+- name: "Deploy ***"
+  hosts: "***"
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  vars:
+    app_files:
+      - "***.war"
+      - "***.war"
+
+
+  roles:
+    - deploy-app

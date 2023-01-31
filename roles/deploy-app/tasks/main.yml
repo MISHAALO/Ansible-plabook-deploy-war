@@ -1,0 +1,11 @@
+---
+- include_role:
+    name: undeploy-all-wars
+
+- include_role:
+    name: deploy-wars
+  vars:
+    war_names: "{{ app_files | map('replace', '.war', '') | list }}"
+
+- include_role:
+    name: deploy-jasperreports
